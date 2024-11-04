@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { S3 } from 'aws-sdk';
-import path from 'path';
+import { extname } from 'path';
 
 @Injectable()
 export class S3Service {
@@ -17,7 +17,7 @@ export class S3Service {
     });
   }
   async uploadFile(file: Express.Multer.File, folderName: string) {
-    const ext = path.extname(file.originalname);
+    const ext = extname(file.originalname);
     return await this.s3
       .upload({
         Bucket: process.env.S3_BUCKET_NAME,
