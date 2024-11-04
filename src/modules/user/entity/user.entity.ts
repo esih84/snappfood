@@ -8,6 +8,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { UserAddressEntity } from './address.entity';
+import { timestamp } from 'rxjs';
 
 @Entity(EntityNames.User)
 export class UserEntity {
@@ -27,9 +28,9 @@ export class UserEntity {
   score: number;
   @Column({ nullable: true })
   agentId: number;
-  @CreateDateColumn({ type: 'time with time zone' })
+  @CreateDateColumn({ type: 'timestamp' })
   created_at: Date;
-  @UpdateDateColumn({ type: 'time with time zone' })
+  @UpdateDateColumn({ type: 'timestamp' })
   updated_at: Date;
   @OneToMany(() => UserAddressEntity, (address) => address.user)
   addressList: UserAddressEntity[];
