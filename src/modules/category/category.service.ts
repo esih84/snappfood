@@ -91,6 +91,17 @@ export class CategoryService {
     return this.categoryRepository.findOneBy({ slug });
   }
 
+  async findBySlug(slug: string) {
+    const category = await this.categoryRepository.findOne({
+      where: { slug },
+      relations: {
+        children: true,
+      },
+    });
+    if (!category) throw new NotFoundException(NotFoundMessage.category);
+
+    return category;
+  }
   async update(
     id: number,
     updateCategoryDto: UpdateCategoryDto,
