@@ -7,7 +7,7 @@ import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CategoryEntity } from './entities/category.entity';
-import { Repository } from 'typeorm';
+import { DeepPartial, Repository } from 'typeorm';
 import { S3Service } from '../s3/st.service';
 import {
   ConflictMessages,
@@ -33,7 +33,7 @@ export class CategoryService {
     createCategoryDto: CreateCategoryDto,
     image: Express.Multer.File,
   ) {
-    const { Location } = await this.s3Service.uploadFile(
+    const { Location, Key } = await this.s3Service.uploadFile(
       image,
       'snappfood-image',
     );
@@ -52,6 +52,7 @@ export class CategoryService {
       slug,
       show,
       image: Location,
+      imageKey: Key,
       parentId: parent?.id,
     });
     return {
@@ -90,8 +91,43 @@ export class CategoryService {
     return this.categoryRepository.findOneBy({ slug });
   }
 
-  update(id: number, updateCategoryDto: UpdateCategoryDto) {
-    return `This action updates a #${id} category`;
+  async update(
+    id: number,
+    updateCategoryDto: UpdateCategoryDto,
+    image: Express.Multer.File,
+  ) {
+    const { parentId, show, slug, title } = updateCategoryDto;
+    const category = await this.categoryRepository.findOneBy({ id });
+    if (!category) throw new NotFoundException(NotFoundMessage.category);
+    const updateObject: DeepPartial<CategoryEntity> = {};
+    if (image) {
+      const { Location, Key } = await this.s3Service.uploadFile(
+        image,
+        'snappfood-image',
+      );
+      if (Location) {
+        updateObject['image'] = Location;
+        updateObject['imageKey'] = Key;
+        await this.s3Service.deleteFile(category?.imageKey);
+      }
+    }
+    if (title) updateObject['title'] = title;
+    if (show && isBoolean(show)) updateObject['show'] = toBoolean(show);
+    if (parentId && !isNaN(parseInt(parentId.toString()))) {
+      const category = await this.findOneById(+parentId);
+      if (!category) throw new NotFoundException(NotFoundMessage.category);
+      updateObject['parentId'] = category.id;
+    }
+    if (slug) {
+      const category = await this.findOneBySlug(slug);
+      if (category && category.id !== id)
+        throw new ConflictException(ConflictMessages.Category);
+      updateObject['slug'] = slug;
+    }
+    await this.categoryRepository.update({ id }, updateObject);
+    return {
+      message: PublicMessage.Updated,
+    };
   }
 
   remove(id: number) {

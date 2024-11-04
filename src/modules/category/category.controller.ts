@@ -22,6 +22,7 @@ import { SwaggerConsumes } from 'src/common/enums/swagger-consumes.enum';
 import { UploadFileS3 } from 'src/common/interceptors/upload-file.interceptor';
 import { Pagination } from 'src/common/decorators/pagination.decorator';
 import { paginationDto } from 'src/common/dto/pagination.dto';
+import { UploadImage } from 'src/common/decorators/upload-file.decorator';
 
 @Controller('category')
 @ApiTags('category')
@@ -33,14 +34,7 @@ export class CategoryController {
   @UseInterceptors(UploadFileS3('image'))
   create(
     @Body() createCategoryDto: CreateCategoryDto,
-    @UploadedFile(
-      new ParseFilePipe({
-        validators: [
-          new MaxFileSizeValidator({ maxSize: 10 * 1024 * 1024 }),
-          new FileTypeValidator({ fileType: 'image/(png|jpg|jpeg|webp)' }),
-        ],
-      }),
-    )
+    @UploadImage()
     image: Express.Multer.File,
   ) {
     return this.categoryService.create(createCategoryDto, image);
@@ -53,11 +47,15 @@ export class CategoryController {
   }
 
   @Patch(':id')
+  @ApiConsumes(SwaggerConsumes.MultipartData)
+  @UseInterceptors(UploadFileS3('image'))
   update(
-    @Param('id') id: string,
+    @Param('id', ParseIntPipe) id: number,
     @Body() updateCategoryDto: UpdateCategoryDto,
+    @UploadImage()
+    image: Express.Multer.File,
   ) {
-    return this.categoryService.update(+id, updateCategoryDto);
+    return this.categoryService.update(id, updateCategoryDto, image);
   }
 
   @Delete(':id')

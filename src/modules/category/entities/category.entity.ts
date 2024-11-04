@@ -20,6 +20,8 @@ export class CategoryEntity {
   @Column()
   show: boolean;
   @Column({ nullable: true })
+  imageKey: string;
+  @Column({ nullable: true })
   parentId: number;
   @ManyToOne(() => CategoryEntity, (category) => category.children, {
     onDelete: 'CASCADE',
