@@ -97,8 +97,7 @@ export class CategoryService {
     image: Express.Multer.File,
   ) {
     const { parentId, show, slug, title } = updateCategoryDto;
-    const category = await this.categoryRepository.findOneBy({ id });
-    if (!category) throw new NotFoundException(NotFoundMessage.category);
+    const category = await this.findOneById(id);
     const updateObject: DeepPartial<CategoryEntity> = {};
     if (image) {
       const { Location, Key } = await this.s3Service.uploadFile(
@@ -130,7 +129,11 @@ export class CategoryService {
     };
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} category`;
+  async remove(id: number) {
+    const category = await this.findOneById(id);
+    await this.categoryRepository.delete({ id });
+    return {
+      message: PublicMessage.Deleted,
+    };
   }
 }

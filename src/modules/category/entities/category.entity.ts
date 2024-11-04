@@ -19,7 +19,7 @@ export class CategoryEntity {
   image: string;
   @Column()
   show: boolean;
-  @Column({ nullable: true })
+  @Column()
   imageKey: string;
   @Column({ nullable: true })
   parentId: number;
