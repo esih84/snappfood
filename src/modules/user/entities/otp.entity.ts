@@ -2,7 +2,7 @@ import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { UserEntity } from './user.entity';
 import { EntityNames } from 'src/common/enums/entity-name.enum';
 
-@Entity(EntityNames.Otp)
+@Entity(EntityNames.UserOtp)
 export class OTPEntity {
   @PrimaryGeneratedColumn('increment')
   id: number;

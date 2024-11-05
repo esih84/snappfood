@@ -1,4 +1,5 @@
 import { EntityNames } from 'src/common/enums/entity-name.enum';
+import { SupplierEntity } from 'src/modules/supplier/entities/supplier.entity';
 import {
   Column,
   Entity,
@@ -29,4 +30,6 @@ export class CategoryEntity {
   parent: CategoryEntity;
   @OneToMany(() => CategoryEntity, (category) => category.parent)
   children: CategoryEntity[];
+  @OneToMany(() => SupplierEntity, (supplier) => supplier.category)
+  suppliers: SupplierEntity[];
 }
