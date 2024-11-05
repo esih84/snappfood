@@ -5,10 +5,15 @@ import { CategoryService } from '../category/category.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { SupplierEntity } from './entities/supplier.entity';
 import { SupplierOtpEntity } from './entities/otp.entity';
+import { JwtService } from '@nestjs/jwt';
+import { CategoryModule } from '../category/category.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([SupplierEntity, SupplierOtpEntity])],
+  imports: [
+    TypeOrmModule.forFeature([SupplierEntity, SupplierOtpEntity]),
+    CategoryModule,
+  ],
   controllers: [SupplierController],
-  providers: [SupplierService, CategoryService],
+  providers: [SupplierService, JwtService],
 })
 export class SupplierModule {}

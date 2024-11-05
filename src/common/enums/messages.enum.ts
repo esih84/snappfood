@@ -1,6 +1,8 @@
 export enum ConflictMessages {
   Category = 'این دسته بندی از قبل وجود دارد',
   supplier = 'این توزیع کننده از قبل وجد دارد',
+  nationalCode = 'کد ملی قبلا استفاده شده است',
+  email = 'ایمیل قبلا استفاده شده است',
 }
 
 export enum PublicMessage {

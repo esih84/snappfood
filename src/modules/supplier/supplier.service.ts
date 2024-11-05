@@ -1,14 +1,19 @@
 import {
   BadRequestException,
   ConflictException,
+  Inject,
   Injectable,
+  Scope,
   UnauthorizedException,
 } from '@nestjs/common';
 
 import { SupplierEntity } from './entities/supplier.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { SupplierSignUpDto } from './dto/supplier.dto';
+import {
+  SupplementaryInformationDto,
+  SupplierSignUpDto,
+} from './dto/supplier.dto';
 import {
   ConflictMessages,
   PublicMessage,
@@ -19,8 +24,11 @@ import { SupplierOtpEntity } from './entities/otp.entity';
 import { checkOtpDto } from '../auth/dto/otp.dto';
 import { JwtService } from '@nestjs/jwt';
 import { TokensPayload } from '../auth/types/payload';
+import { REQUEST } from '@nestjs/core';
+import { Request } from 'express';
+import { SupplierStatus } from './enums/supplier-status.enum';
 
-@Injectable()
+@Injectable({ scope: Scope.REQUEST })
 export class SupplierService {
   constructor(
     @InjectRepository(SupplierEntity)
@@ -29,6 +37,7 @@ export class SupplierService {
     private supplierOtpRepository: Repository<SupplierOtpEntity>,
     private categoryService: CategoryService,
     private jwtService: JwtService,
+    @Inject(REQUEST) private request: Request,
   ) {}
   async signup(signUpDto: SupplierSignUpDto) {
     const {
@@ -53,6 +62,7 @@ export class SupplierService {
       manager_family,
       store_name,
       city,
+      phone,
       CategoryId: category.id,
       agentId: agent?.id ?? null,
       invite_code: mobileNumber.toString(32).toUpperCase(),
@@ -128,6 +138,52 @@ export class SupplierService {
     return {
       accessToken,
       refreshToken,
+    };
+  }
+  async validateAccessToken(token: string) {
+    try {
+      const payload = this.jwtService.verify<TokensPayload>(token, {
+        secret: process.env.ACCESS_TOKEN_SECRET,
+      });
+      if (typeof payload === 'object' && payload?.id) {
+        const user = await this.supplierRepository.findOneBy({
+          id: payload.id,
+        });
+        if (!user) {
+          throw new UnauthorizedException('login on your account');
+        }
+        return user;
+      }
+      throw new UnauthorizedException('login on your account');
+    } catch (error) {
+      throw new UnauthorizedException('login on your account');
+    }
+  }
+
+  //?
+  async saveSupplementaryInformation(
+    informationDto: SupplementaryInformationDto,
+  ) {
+    const { id } = this.request.supplier;
+    const { email, national_code } = informationDto;
+    let supplier = await this.supplierRepository.findOneBy({ national_code });
+    if (supplier && supplier.id !== id) {
+      throw new ConflictException(ConflictMessages.nationalCode);
+    }
+    supplier = await this.supplierRepository.findOneBy({ email });
+    if (supplier && supplier.id !== id) {
+      throw new ConflictException(ConflictMessages.email);
+    }
+    await this.supplierRepository.update(
+      { id },
+      {
+        email,
+        national_code,
+        status: SupplierStatus.SupplementaryInformation,
+      },
+    );
+    return {
+      message: PublicMessage.Updated,
     };
   }
 }

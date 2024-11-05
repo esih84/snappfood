@@ -9,5 +9,6 @@ import { S3Service } from '../s3/st.service';
   imports: [TypeOrmModule.forFeature([CategoryEntity])],
   controllers: [CategoryController],
   providers: [CategoryService, S3Service],
+  exports: [TypeOrmModule, CategoryService, S3Service],
 })
 export class CategoryModule {}
