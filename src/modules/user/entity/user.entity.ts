@@ -3,12 +3,14 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { UserAddressEntity } from './address.entity';
-import { timestamp } from 'rxjs';
+import { OTPEntity } from './otp.entity';
 
 @Entity(EntityNames.User)
 export class UserEntity {
@@ -22,7 +24,7 @@ export class UserEntity {
   mobile: string;
   @Column({ nullable: true, unique: true })
   email: string;
-  @Column({ unique: true })
+  @Column({ unique: true, nullable: true })
   invite_code: string;
   @Column({ default: 0 })
   score: number;
@@ -34,4 +36,11 @@ export class UserEntity {
   updated_at: Date;
   @OneToMany(() => UserAddressEntity, (address) => address.user)
   addressList: UserAddressEntity[];
+  @Column({ nullable: true })
+  otpId: number;
+  @OneToOne(() => OTPEntity, (otp) => otp.user)
+  @JoinColumn()
+  otp: OTPEntity;
+  @Column({ nullable: true, default: false })
+  mobile_verified: boolean;
 }
