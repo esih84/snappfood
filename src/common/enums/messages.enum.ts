@@ -16,3 +16,6 @@ export enum PublicMessage {
 export enum NotFoundMessage {
   category = 'دسته بندی یافت نشد',
 }
+export enum BadRequestMessage {
+  Document = 'لطفا اسناد را کامل وارد کنید',
+}

@@ -8,13 +8,14 @@ import {
 } from '@nestjs/common';
 
 import { SupplierEntity } from './entities/supplier.entity';
-import { Repository } from 'typeorm';
+import { DeepPartial, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   SupplementaryInformationDto,
   SupplierSignUpDto,
 } from './dto/supplier.dto';
 import {
+  BadRequestMessage,
   ConflictMessages,
   PublicMessage,
 } from 'src/common/enums/messages.enum';
@@ -27,6 +28,9 @@ import { TokensPayload } from '../auth/types/payload';
 import { REQUEST } from '@nestjs/core';
 import { Request } from 'express';
 import { SupplierStatus } from './enums/supplier-status.enum';
+import { SupplierDocumentType } from './type';
+import { S3Service } from '../s3/st.service';
+import { SupplierDocumentEntity } from './entities/supplier-document.entity';
 
 @Injectable({ scope: Scope.REQUEST })
 export class SupplierService {
@@ -35,8 +39,11 @@ export class SupplierService {
     private supplierRepository: Repository<SupplierEntity>,
     @InjectRepository(SupplierOtpEntity)
     private supplierOtpRepository: Repository<SupplierOtpEntity>,
+    @InjectRepository(SupplierDocumentEntity)
+    private supplierDocsRepository: Repository<SupplierDocumentEntity>,
     private categoryService: CategoryService,
     private jwtService: JwtService,
+    private s3Service: S3Service,
     @Inject(REQUEST) private request: Request,
   ) {}
   async signup(signUpDto: SupplierSignUpDto) {
@@ -184,6 +191,30 @@ export class SupplierService {
     );
     return {
       message: PublicMessage.Updated,
+    };
+  }
+  async uploadDocuments(files: SupplierDocumentType) {
+    const { id } = this.request.supplier;
+    const { image, acceptedDoc } = files;
+    const imageResult = await this.s3Service.uploadFile(image[0], 'images');
+    const docResult = await this.s3Service.uploadFile(
+      acceptedDoc[0],
+      'acceptedDoc',
+    );
+    const documentObject: DeepPartial<SupplierDocumentEntity> = {
+      supplierId: id,
+    };
+    if (!imageResult || !docResult)
+      throw new BadRequestException(BadRequestMessage.Document);
+    documentObject['image'] = imageResult.Location;
+    documentObject['document'] = docResult.Location;
+    await this.supplierDocsRepository.insert(documentObject);
+    await this.supplierRepository.update(
+      { id },
+      { status: SupplierStatus.UploadedDocument },
+    );
+    return {
+      message: PublicMessage.Created,
     };
   }
 }

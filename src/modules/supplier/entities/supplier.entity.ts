@@ -11,6 +11,7 @@ import {
 } from 'typeorm';
 import { SupplierOtpEntity } from './otp.entity';
 import { SupplierStatus } from '../enums/supplier-status.enum';
+import { SupplierDocumentEntity } from './supplier-document.entity';
 
 @Entity(EntityNames.Supplier)
 export class SupplierEntity {
@@ -55,4 +56,6 @@ export class SupplierEntity {
   otp: SupplierOtpEntity;
   @Column({ nullable: true, default: false })
   mobile_verified: boolean;
+  @OneToMany(() => SupplierDocumentEntity, (document) => document.supplier)
+  documents: SupplierDocumentEntity[];
 }
