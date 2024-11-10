@@ -19,3 +19,12 @@ export enum NotFoundMessage {
 export enum BadRequestMessage {
   Document = 'لطفا اسناد را کامل وارد کنید',
 }
+
+export enum UnauthorizedMessage {
+  NotFoundAccount = 'کاربر وجود ندارد',
+  login = 'لطفا وارد حساب کاربری خود شوید',
+}
+
+export enum ForbiddenMessage {
+  UnacceptedAccount = ' حساب شما تایید نشده است با پشتیبانب تماس بگیرید',
+}

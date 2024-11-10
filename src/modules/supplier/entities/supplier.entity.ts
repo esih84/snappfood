@@ -58,4 +58,6 @@ export class SupplierEntity {
   mobile_verified: boolean;
   @OneToMany(() => SupplierDocumentEntity, (document) => document.supplier)
   documents: SupplierDocumentEntity[];
+  @Column({ nullable: true })
+  contract_image: string;
 }

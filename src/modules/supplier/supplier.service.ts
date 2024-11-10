@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   ConflictException,
+  ForbiddenException,
   Inject,
   Injectable,
   Scope,
@@ -18,11 +19,12 @@ import {
   BadRequestMessage,
   ConflictMessages,
   PublicMessage,
+  UnauthorizedMessage,
 } from 'src/common/enums/messages.enum';
 import { CategoryService } from '../category/category.service';
 import { randomInt } from 'crypto';
 import { SupplierOtpEntity } from './entities/otp.entity';
-import { checkOtpDto } from '../auth/dto/otp.dto';
+import { checkOtpDto, sendOtpDto } from '../auth/dto/otp.dto';
 import { JwtService } from '@nestjs/jwt';
 import { TokensPayload } from '../auth/types/payload';
 import { REQUEST } from '@nestjs/core';
@@ -76,6 +78,17 @@ export class SupplierService {
     });
     account = await this.supplierRepository.save(account);
     await this.createOtpForSupplier(account);
+    return {
+      message: PublicMessage.SendOtpSuccessfully,
+    };
+  }
+  async sendOtp(otpDto: sendOtpDto) {
+    const { mobile } = otpDto;
+    const supplier = await this.supplierRepository.findOneBy({ phone: mobile });
+    if (!supplier) {
+      throw new UnauthorizedException(UnauthorizedMessage.NotFoundAccount);
+    }
+    await this.createOtpForSupplier(supplier);
     return {
       message: PublicMessage.SendOtpSuccessfully,
     };
@@ -215,6 +228,20 @@ export class SupplierService {
     );
     return {
       message: PublicMessage.Created,
+    };
+  }
+  async registerContract(image: Express.Multer.File) {
+    const { id } = this.request.supplier;
+    const supplier = await this.supplierRepository.findOneBy({ id });
+    if (supplier.status !== SupplierStatus.UploadedDocument)
+      throw new ForbiddenException('لطف اول اسناد را وارد کنید');
+    const { Location } = await this.s3Service.uploadFile(image, 'contract');
+
+    supplier.contract_image = Location;
+    supplier.status = SupplierStatus.Contract;
+    await this.supplierRepository.save(supplier);
+    return {
+      message: PublicMessage.Updated,
     };
   }
 }

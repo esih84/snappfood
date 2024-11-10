@@ -44,3 +44,8 @@ export class UploadDocsDto {
   @ApiProperty({ format: 'binary' })
   acceptedDoc: string;
 }
+
+export class contractDto {
+  @ApiProperty({ format: 'binary' })
+  image: string;
+}
