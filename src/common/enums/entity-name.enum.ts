@@ -6,4 +6,7 @@ export enum EntityNames {
   Supplier = 'supplier',
   SupplierOtp = 'supplier_otp',
   SupplierDocuments = 'supplierDocument',
+  Food = 'Food',
+  Menu = 'menu',
+  Feedbacks = 'feedback',
 }

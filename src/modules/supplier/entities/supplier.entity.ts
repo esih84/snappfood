@@ -12,6 +12,8 @@ import {
 import { SupplierOtpEntity } from './otp.entity';
 import { SupplierStatus } from '../enums/supplier-status.enum';
 import { SupplierDocumentEntity } from './supplier-document.entity';
+import { MenuEntity } from 'src/modules/menu/entities/menu.entity';
+import { FoodEntity } from 'src/modules/menu/entities/food.entity';
 
 @Entity(EntityNames.Supplier)
 export class SupplierEntity {
@@ -49,6 +51,10 @@ export class SupplierEntity {
   agent: SupplierEntity;
   @OneToMany(() => SupplierEntity, (supplier) => supplier.agent)
   subsets: SupplierEntity[];
+  @OneToMany(() => MenuEntity, (menu) => menu.supplier)
+  menuTypes: MenuEntity[];
+  @OneToMany(() => FoodEntity, (food) => food.supplier)
+  menu: FoodEntity[];
   @Column({ nullable: true })
   otpId: number;
   @OneToOne(() => SupplierOtpEntity, (otp) => otp.supplier)
