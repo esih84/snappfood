@@ -21,5 +21,6 @@ import { SupplierDocumentEntity } from './entities/supplier-document.entity';
   ],
   controllers: [SupplierController],
   providers: [SupplierService, JwtService, S3Service],
+  exports: [SupplierService, TypeOrmModule, S3Service, JwtService],
 })
 export class SupplierModule {}
