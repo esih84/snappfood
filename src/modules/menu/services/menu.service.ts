@@ -49,7 +49,7 @@ export class MenuService {
   }
   async findOneById(id: number) {
     const { id: supplierId } = this.request.supplier;
-
+    console.log(id);
     const menu = await this.menuRepository.findOneBy({
       id,
       supplierId,

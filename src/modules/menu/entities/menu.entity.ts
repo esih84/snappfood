@@ -22,5 +22,5 @@ export class MenuEntity {
   @Column()
   supplierId: number;
   @OneToMany(() => FoodEntity, (food) => food.menu)
-  items: MenuEntity[];
+  items: FoodEntity[];
 }

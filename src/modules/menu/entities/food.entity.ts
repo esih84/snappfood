@@ -19,6 +19,8 @@ export class FoodEntity {
   @Column()
   image: string;
   @Column()
+  image_key: string;
+  @Column()
   description: string;
   @Column({ type: 'numeric' })
   price: number;
