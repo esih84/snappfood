@@ -1,4 +1,9 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { MenuService } from './services/menu.service';
 import { FeedbackService } from './services/feedback.service';
 import { MenuController } from './controllers/menu.controller';
@@ -23,5 +28,23 @@ import { SupplierStatusMiddleware } from '../supplier/middlewares/supplier-statu
 export class MenuModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(SupplierStatusMiddleware).forRoutes(MenuController);
+    consumer.apply(SupplierStatusMiddleware).forRoutes(
+      {
+        path: '/food',
+        method: RequestMethod.PUT,
+      },
+      {
+        path: '/food',
+        method: RequestMethod.POST,
+      },
+      {
+        path: '/food',
+        method: RequestMethod.DELETE,
+      },
+      {
+        path: '/food/:id',
+        method: RequestMethod.GET,
+      },
+    );
   }
 }
