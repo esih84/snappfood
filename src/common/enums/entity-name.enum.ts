@@ -11,4 +11,7 @@ export enum EntityNames {
   Feedbacks = 'feedback',
   UserBasket = 'user_basket',
   Discount = 'discount',
+  Order = 'order',
+  OrderItems = 'order_items',
+  Payment = 'payment',
 }

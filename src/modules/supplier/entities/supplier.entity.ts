@@ -14,6 +14,7 @@ import { SupplierStatus } from '../enums/supplier-status.enum';
 import { SupplierDocumentEntity } from './supplier-document.entity';
 import { MenuEntity } from 'src/modules/menu/entities/menu.entity';
 import { FoodEntity } from 'src/modules/menu/entities/food.entity';
+import { OrderItemEntity } from 'src/modules/order/entities/order-items.entity';
 
 @Entity(EntityNames.Supplier)
 export class SupplierEntity {
@@ -55,6 +56,8 @@ export class SupplierEntity {
   menuTypes: MenuEntity[];
   @OneToMany(() => FoodEntity, (food) => food.supplier)
   menu: FoodEntity[];
+  @OneToMany(() => OrderItemEntity, (order) => order.supplier)
+  orders: OrderItemEntity[];
   @Column({ nullable: true })
   otpId: number;
   @OneToOne(() => SupplierOtpEntity, (otp) => otp.supplier)

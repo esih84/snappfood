@@ -10,6 +10,7 @@ import { SupplierEntity } from 'src/modules/supplier/entities/supplier.entity';
 import { MenuEntity } from './menu.entity';
 import { FeedbackEntity } from 'src/modules/menu/entities/feedback.entity';
 import { UserBasketEntity } from 'src/modules/basket/entities/basket.entity';
+import { OrderItemEntity } from 'src/modules/order/entities/order-items.entity';
 
 @Entity(EntityNames.Food)
 export class FoodEntity {
@@ -43,4 +44,6 @@ export class FoodEntity {
   feedbacks: FeedbackEntity[];
   @OneToMany(() => UserBasketEntity, (basket) => basket.food)
   baskets: UserBasketEntity[];
+  @OneToMany(() => OrderItemEntity, (order) => order.food)
+  orders: OrderItemEntity[];
 }
