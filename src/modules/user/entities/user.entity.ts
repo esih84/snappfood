@@ -12,6 +12,7 @@ import {
 import { UserAddressEntity } from './address.entity';
 import { OTPEntity } from './otp.entity';
 import { FeedbackEntity } from 'src/modules/menu/entities/feedback.entity';
+import { UserBasketEntity } from 'src/modules/basket/entities/basket.entity';
 
 @Entity(EntityNames.User)
 export class UserEntity {
@@ -46,4 +47,6 @@ export class UserEntity {
   mobile_verified: boolean;
   @OneToMany(() => FeedbackEntity, (feedback) => feedback.user)
   feedbacks: FeedbackEntity[];
+  @OneToMany(() => UserBasketEntity, (basket) => basket.user)
+  basket: UserBasketEntity[];
 }

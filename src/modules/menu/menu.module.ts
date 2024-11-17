@@ -22,6 +22,7 @@ import { SupplierStatusMiddleware } from '../supplier/middlewares/supplier-statu
     TypeOrmModule.forFeature([MenuEntity, FoodEntity, FeedbackEntity]),
     SupplierModule,
   ],
+  exports: [TypeOrmModule, FoodService],
   controllers: [MenuController, FeedbackController, FoodController],
   providers: [MenuService, FeedbackService, FoodService],
 })

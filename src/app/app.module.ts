@@ -10,6 +10,8 @@ import { UserModule } from 'src/modules/user/user.module';
 import { AuthModule } from 'src/modules/auth/auth.module';
 import { SupplierModule } from 'src/modules/supplier/supplier.module';
 import { MenuModule } from 'src/modules/menu/menu.module';
+import { DiscountModule } from 'src/modules/discount/discount.module';
+import { BasketModule } from 'src/modules/basket/basket.module';
 
 @Module({
   imports: [
@@ -23,6 +25,8 @@ import { MenuModule } from 'src/modules/menu/menu.module';
     AuthModule,
     SupplierModule,
     MenuModule,
+    DiscountModule,
+    BasketModule,
   ],
   controllers: [AppController],
   providers: [AppService],

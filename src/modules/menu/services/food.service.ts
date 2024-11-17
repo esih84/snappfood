@@ -119,6 +119,13 @@ export class FoodService {
     if (!food) throw new NotFoundException(NotFoundMessage.food);
     return food;
   }
+  async getOne(id: number) {
+    const food = await this.foodRepository.findOne({
+      where: { id },
+    });
+    if (!food) throw new NotFoundException(NotFoundMessage.food);
+    return food;
+  }
 
   async remove(id: number) {
     const menu = await this.findOne(id);

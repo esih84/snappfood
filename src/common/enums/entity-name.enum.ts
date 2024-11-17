@@ -9,4 +9,6 @@ export enum EntityNames {
   Food = 'Food',
   Menu = 'menu',
   Feedbacks = 'feedback',
+  UserBasket = 'user_basket',
+  Discount = 'discount',
 }
