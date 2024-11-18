@@ -14,6 +14,7 @@ export enum PublicMessage {
   SendOtpSuccessfully = 'کد با موفقیت ارسال شد',
   AddToBasket = 'با موفقیت به سبد خرید اضافه شد',
   RemoveFromBasket = 'آیتم مورد نظر حذف شد',
+  PaymentSuccessfully = 'پرداخت با موفقیت انجام شد',
 }
 
 export enum NotFoundMessage {
@@ -22,12 +23,17 @@ export enum NotFoundMessage {
   food = ' غذا یافت نشد',
   discount = ' کد تخفیف یافت نشد',
   foodInBasket = 'آیتم مورد نظر در سبد خرید وجود ندارد',
+  Address = 'آدرس یافت نشد',
+  Order = 'سفارش یافت نشد',
 }
 export enum BadRequestMessage {
   Document = 'لطفا اسناد را کامل وارد کنید',
   discount = 'شما باید یکی از فیلدهای قیمت یا درصد را وارد کنید',
   BasketDiscount = 'شما نمیتوانید از این کد تخفیف روی این سبد خرید استفاده کنید',
   SeveralDiscount = 'شما نمیتوانید چندبار از کد تخفیف رستوران استفاده کنید',
+  ZarinnpalConnection = 'ارتباط با زرین پال برقرار نشد',
+  OrderFoodList = 'لیست غذا خالی است',
+  PaymentFailed = ' پرداخت انجام نشد',
 }
 
 export enum UnauthorizedMessage {

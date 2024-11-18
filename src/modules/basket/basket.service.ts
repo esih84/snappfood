@@ -233,6 +233,7 @@ export class BasketService {
       total_discount_amount = discount_amount;
       foodList.push({
         name: food.name,
+        foodId: food.id,
         description: food.description,
         count,
         image: food.image,
@@ -241,6 +242,7 @@ export class BasketService {
         discount_amount,
         payment_amount: food.price * count - discount_amount,
         discountCode,
+        supplierId,
         supplierName: food.supplier.store_name,
         //TODO add supplier image
       });

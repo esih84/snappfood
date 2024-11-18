@@ -16,5 +16,12 @@ namespace NodeJS {
     //* JWT
     ACCESS_TOKEN_SECRET: string;
     REFRESH_TOKEN_SECRET: string;
+
+    //* Zarinnpal
+    ZARINNPAL_VERIFY_URL: string;
+    ZARINNPAL_REQUEST_URL: string;
+    ZARINNPAL_MERCHANT_ID: string;
+    ZARINNPAL_GETWAY_URL: string;
+    ZARINNPAL_CALLBACK_URL: string;
   }
 }

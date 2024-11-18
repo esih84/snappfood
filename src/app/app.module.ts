@@ -12,6 +12,9 @@ import { SupplierModule } from 'src/modules/supplier/supplier.module';
 import { MenuModule } from 'src/modules/menu/menu.module';
 import { DiscountModule } from 'src/modules/discount/discount.module';
 import { BasketModule } from 'src/modules/basket/basket.module';
+import { PaymentModule } from 'src/modules/payment/payment.module';
+import { OrderModule } from 'src/modules/order/order.module';
+import { HttpApiModule } from 'src/modules/http/http.module';
 
 @Module({
   imports: [
@@ -27,6 +30,9 @@ import { BasketModule } from 'src/modules/basket/basket.module';
     MenuModule,
     DiscountModule,
     BasketModule,
+    PaymentModule,
+    OrderModule,
+    HttpApiModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -19,8 +19,12 @@ export class PaymentEntity {
   orderId: number;
   @Column()
   amount: number;
+  @Column({ nullable: true })
+  authority: string;
+  @Column({ default: false })
+  status: boolean;
   @Column()
-  invoice_number: number;
+  invoice_number: string;
   @ManyToOne(() => OrderEntity, (order) => order.payments, {
     onDelete: 'CASCADE',
   })

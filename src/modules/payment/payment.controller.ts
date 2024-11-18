@@ -1,34 +1,24 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Query, Res } from '@nestjs/common';
 import { PaymentService } from './payment.service';
-import { CreatePaymentDto } from './dto/create-payment.dto';
-import { UpdatePaymentDto } from './dto/update-payment.dto';
-
+import { UserAuth } from 'src/common/decorators/auth.decorator';
+import { PaymentDto } from './dto/payment.dto';
+import { Response } from 'express';
 @Controller('payment')
 export class PaymentController {
   constructor(private readonly paymentService: PaymentService) {}
 
   @Post()
-  create(@Body() createPaymentDto: CreatePaymentDto) {
-    return this.paymentService.create(createPaymentDto);
+  @UserAuth()
+  getWayUrl(@Body() paymentDto: PaymentDto) {
+    return this.paymentService.getGetWayUrl(paymentDto);
   }
-
-  @Get()
-  findAll() {
-    return this.paymentService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.paymentService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePaymentDto: UpdatePaymentDto) {
-    return this.paymentService.update(+id, updatePaymentDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.paymentService.remove(+id);
+  @Get('/verify')
+  async verifyPayment(
+    @Query('Authority') authority: string,
+    @Query('Status') status: string,
+    @Res() res: Response,
+  ) {
+    const url = await this.paymentService.verify(authority, status);
+    return res.redirect(url);
   }
 }

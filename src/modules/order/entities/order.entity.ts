@@ -18,14 +18,14 @@ export class OrderEntity {
   id: number;
   @Column()
   userId: number;
-  @Column()
+  @Column({ nullable: true })
   addressId: number;
   @Column()
   payment_amount: number;
   @Column()
   discount_amount: number;
   @Column()
-  total_amount: string;
+  total_amount: number;
   @Column({ nullable: true })
   description: string;
   @Column({ type: 'enum', enum: OrderStatus, default: OrderStatus.Pending })

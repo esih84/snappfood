@@ -16,5 +16,6 @@ import { MenuModule } from '../menu/menu.module';
   ],
   controllers: [BasketController],
   providers: [BasketService, DiscountService],
+  exports: [TypeOrmModule, BasketService, DiscountService],
 })
 export class BasketModule {}
