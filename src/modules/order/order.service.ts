@@ -15,7 +15,6 @@ import { UserAddressEntity } from '../user/entities/address.entity';
 import {
   BadRequestMessage,
   NotFoundMessage,
-  PublicMessage,
 } from 'src/common/enums/messages.enum';
 import { OrderItemStatus, OrderStatus } from './enums/status.enum';
 import { OrderItemEntity } from './entities/order-items.entity';
@@ -35,6 +34,7 @@ export class OrderService {
     const { addressId, description = undefined } = paymentDto;
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
+    await queryRunner.startTransaction();
     try {
       const { id: userId } = this.request.user;
       const address = await this.userAddressRepository.findOneBy({
@@ -85,5 +85,39 @@ export class OrderService {
   }
   async save(order: OrderEntity) {
     return await this.orderRepository.save(order);
+  }
+  async perviousUserOrders() {
+    const { id: userId } = this.request.user;
+    const orders = await this.orderRepository.find({
+      where: { userId },
+      relations: {
+        address: true,
+        items: {
+          supplier: true,
+          food: true,
+        },
+      },
+      select: {
+        id: true,
+
+        items: {
+          id: true,
+          supplier: {
+            id: true,
+            store_name: true,
+          },
+          food: {
+            name: true,
+          },
+
+          count: true,
+        },
+        address: {
+          title: true,
+        },
+        created_at: true,
+      },
+    });
+    return orders;
   }
 }

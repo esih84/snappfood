@@ -16,8 +16,8 @@ export class UserBasketEntity {
   count: number;
   @Column({ nullable: true })
   discountId: number;
-  // @Column({ enum: BasketDiscountType, type: 'enum', nullable: true })
-  // type: string;
+  @Column({ default: false })
+  ordered: boolean;
   @ManyToOne(() => FoodEntity, (food) => food.baskets, { onDelete: 'CASCADE' })
   food: FoodEntity;
   @ManyToOne(() => UserEntity, (user) => user.basket, { onDelete: 'CASCADE' })

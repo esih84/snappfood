@@ -53,6 +53,7 @@ export class PaymentService {
         });
       payment.authority = authority;
       await this.paymentRepository.save(payment);
+      await this.basketService.basketOrdered();
       return {
         getWayURL,
         code,

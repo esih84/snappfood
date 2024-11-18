@@ -34,6 +34,7 @@ export enum BadRequestMessage {
   ZarinnpalConnection = 'ارتباط با زرین پال برقرار نشد',
   OrderFoodList = 'لیست غذا خالی است',
   PaymentFailed = ' پرداخت انجام نشد',
+  BasketEmpty = 'سبد خرید خالی است',
 }
 
 export enum UnauthorizedMessage {

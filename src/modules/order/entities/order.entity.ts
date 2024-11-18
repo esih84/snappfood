@@ -1,6 +1,7 @@
 import { EntityNames } from 'src/common/enums/entity-name.enum';
 import {
   Column,
+  CreateDateColumn,
   Entity,
   ManyToOne,
   OneToMany,
@@ -41,4 +42,6 @@ export class OrderEntity {
   //* This is because oneToMany allows you to pay part of the bill in cash, part by card, and part by payment gateway.
   @OneToMany(() => PaymentEntity, (payment) => payment.order)
   payments: PaymentEntity[];
+  @CreateDateColumn()
+  created_at: Date;
 }

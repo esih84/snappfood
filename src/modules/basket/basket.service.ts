@@ -37,6 +37,7 @@ export class BasketService {
     const food = await this.foodService.getOne(foodId);
     let basketItem = await this.basketRepository.findOne({
       where: {
+        ordered: false,
         userId,
         foodId,
       },
@@ -58,6 +59,7 @@ export class BasketService {
     const food = await this.foodService.getOne(foodId);
     let basketItem = await this.basketRepository.findOne({
       where: {
+        ordered: false,
         userId,
         foodId,
       },
@@ -94,6 +96,7 @@ export class BasketService {
     }
     //// ?
     const userBasketDiscount = await this.basketRepository.findOneBy({
+      ordered: false,
       discountId: discount.id,
       userId,
     });
@@ -107,6 +110,7 @@ export class BasketService {
           discount: true,
         },
         where: {
+          ordered: false,
           userId,
           discount: {
             supplierId: discount.supplierId,
@@ -123,6 +127,7 @@ export class BasketService {
         },
         where: {
           userId,
+          ordered: false,
           food: {
             supplierId: discount.supplierId,
           },
@@ -138,6 +143,7 @@ export class BasketService {
         },
         where: {
           userId,
+          ordered: false,
           discount: {
             supplierId: IsNull(),
             id: Not(IsNull()),
@@ -161,13 +167,18 @@ export class BasketService {
     const discount = await this.discountService.findOneByCode(code);
     const basketDiscount = await this.basketRepository.findOne({
       where: {
+        ordered: false,
         userId,
         discountId: discount.id,
       },
     });
     if (!basketDiscount)
       throw new BadRequestException('کد تخفیف در سبد خرید پیدا نشد');
-    await this.basketRepository.delete({ discountId: discount.id, userId });
+    await this.basketRepository.delete({
+      discountId: discount.id,
+      userId,
+      ordered: false,
+    });
     return {
       message: PublicMessage.Deleted,
     };
@@ -183,9 +194,13 @@ export class BasketService {
       },
       where: {
         userId,
+        ordered: false,
       },
     });
     const foods = basketItem.filter((item) => item.foodId);
+    if (foods.length <= 0) {
+      throw new BadRequestException(BadRequestMessage.BasketEmpty);
+    }
     const supplierDiscount = basketItem.filter(
       (item) => item.discount?.supplierId,
     );
@@ -279,5 +294,9 @@ export class BasketService {
       foodList,
       generalDiscountDetail,
     };
+  }
+  async basketOrdered() {
+    const { id: userId } = this.request.user;
+    await this.basketRepository.update({ userId }, { ordered: true });
   }
 }
